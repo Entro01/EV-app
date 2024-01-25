@@ -20,12 +20,12 @@ public class MemberLoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_member_login);
 
         usernameInput = findViewById(R.id.username_input);
         passwordInput = findViewById(R.id.password_input);
-        memberloginButton = findViewById(R.id.member_login_button);
-        membersignUpButton = findViewById(R.id.member_signup_button);
+        memberloginButton = findViewById(R.id.login_button);
+        membersignUpButton = findViewById(R.id.signup_button);
 
         memberloginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,7 +66,7 @@ public class MemberLoginActivity extends AppCompatActivity {
         Toast.makeText(this, "Logged in as " + username, Toast.LENGTH_SHORT).show();
 
         // Start MapsActivity
-        Intent intent = new Intent(MemberLoginActivity.this, MapsActivity.class);
+        Intent intent = new Intent(MemberLoginActivity.this, MemberViewActivity.class);
         startActivity(intent);
         finish();
     }

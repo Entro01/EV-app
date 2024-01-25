@@ -77,7 +77,7 @@ public class LoginActivity extends AppCompatActivity {
         Toast.makeText(this, "Logged in as " + username, Toast.LENGTH_SHORT).show();
 
         // Start MapsActivity
-        Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
+        Intent intent = new Intent(LoginActivity.this, UserViewActivity.class);
         startActivity(intent);
         finish();
     }
