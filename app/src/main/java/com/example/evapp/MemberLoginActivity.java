@@ -7,17 +7,15 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.content.Intent;
 
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-public class LoginActivity extends AppCompatActivity {
+public class MemberLoginActivity extends AppCompatActivity {
     private EditText usernameInput;
     private EditText passwordInput;
-    private Button loginButton;
-    private Button signUpButton;
-    private Button memberLoginButton;
+    private Button memberloginButton;
+    private Button membersignUpButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,10 +24,10 @@ public class LoginActivity extends AppCompatActivity {
 
         usernameInput = findViewById(R.id.username_input);
         passwordInput = findViewById(R.id.password_input);
-        loginButton = findViewById(R.id.login_button);
-        signUpButton = findViewById(R.id.signup_button);
-        memberLoginButton = findViewById(R.id.member_login_button);
-        loginButton.setOnClickListener(new View.OnClickListener() {
+        memberloginButton = findViewById(R.id.member_login_button);
+        membersignUpButton = findViewById(R.id.member_signup_button);
+
+        memberloginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (validateInput()) {
@@ -38,19 +36,10 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        signUpButton.setOnClickListener(new View.OnClickListener() {
+        membersignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        memberLoginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Start MemberLoginActivity
-                Intent intent = new Intent(LoginActivity.this, MemberLoginActivity.class);
+                Intent intent = new Intent(MemberLoginActivity.this, SignUpActivity.class);
                 startActivity(intent);
             }
         });
@@ -77,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
         Toast.makeText(this, "Logged in as " + username, Toast.LENGTH_SHORT).show();
 
         // Start MapsActivity
-        Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
+        Intent intent = new Intent(MemberLoginActivity.this, MapsActivity.class);
         startActivity(intent);
         finish();
     }
