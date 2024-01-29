@@ -13,33 +13,86 @@ import android.view.View;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.content.Intent;
-import android.widget.Toolbar;
+import android.location.Geocoder;
+import android.location.Address;
+import java.io.IOException;
+import java.util.List;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import android.widget.Toast;
+import android.util.Log;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import android.content.SharedPreferences;
+import java.util.Map;
+
+
+
 
 
 public class UserViewActivity extends AppCompatActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
-
+    private SearchView searchView;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_view);
+        searchView = findViewById(R.id.search_view);
+        searchView.setIconifiedByDefault(false);
+
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        // Check if the app already has location permissions
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // If not, request location permissions
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case LOCATION_PERMISSION_REQUEST_CODE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Location permission was granted. Now you can use location services.
+                } else {
+                    // Location permission was denied. Disable the functionality that depends on location services.
+                }
+                return;
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add markers for EV stations
-        // Replace the coordinates with actual EV station locations
-        LatLng station1 = new LatLng(-34, 151);
-        LatLng station2 = new LatLng(-35, 150);
-        mMap.addMarker(new MarkerOptions().position(station1).title("Station 1").snippet("target"));
-        mMap.addMarker(new MarkerOptions().position(station2).title("Station 2"));
+        // Load the station data from shared preferences
+        SharedPreferences sharedPreferences = getSharedPreferences("STATIONS", MODE_PRIVATE);
+        Map<String, ?> allEntries = sharedPreferences.getAll();
+        for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+            String stationName = entry.getKey();
+            String[] stationData = ((String) entry.getValue()).split(",");
+            String location = stationData[0];
+            String slot = stationData[1];
 
+            // Convert the location to a LatLng object
+            // This assumes that the location is stored as a comma-separated pair of latitude and longitude
+            String[] locationCoordinates = location.split(",");
+            double latitude = Double.parseDouble(locationCoordinates[0]);
+            double longitude = Double.parseDouble(locationCoordinates[1]);
+            LatLng stationLocation = new LatLng(latitude, longitude);
+
+            // Add the station to the map as a marker
+            mMap.addMarker(new MarkerOptions().position(stationLocation).title(stationName).snippet(slot));
+        }
         // Set an info window adapter to handle clicks on the markers
         mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
             @Override
@@ -74,5 +127,37 @@ public class UserViewActivity extends AppCompatActivity implements OnMapReadyCal
                 return view;
             }
         });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Geocoder geocoder = new Geocoder(UserViewActivity.this);
+                List<Address> addresses;
+
+                try {
+                    addresses = geocoder.getFromLocationName(query, 1);
+                    if (!addresses.isEmpty()) {
+                        Address address = addresses.get(0);
+                        LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+                    } else {
+                        Toast.makeText(UserViewActivity.this, "No location found for the entered query", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (IOException e) {
+                    Log.e("Geocoder", "Exception: ", e);
+                }
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
     }
+
+
 }
