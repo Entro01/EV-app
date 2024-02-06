@@ -92,12 +92,22 @@ public class MemberViewActivity extends AppCompatActivity implements OnMapReadyC
             // Convert the location to a LatLng object
             // This assumes that the location is stored as a comma-separated pair of latitude and longitude
             String[] locationCoordinates = location.split(",");
-            double latitude = Double.parseDouble(locationCoordinates[0]);
-            double longitude = Double.parseDouble(locationCoordinates[1]);
-            LatLng stationLocation = new LatLng(latitude, longitude);
+            if (locationCoordinates.length == 2) {
+                try {
+                    double latitude = Double.parseDouble(locationCoordinates[0]);
+                    double longitude = Double.parseDouble(locationCoordinates[1]);
+                    LatLng stationLocation = new LatLng(latitude, longitude);
 
-            // Add the station to the map as a marker
-            mMap.addMarker(new MarkerOptions().position(stationLocation).title(stationName).snippet(slot));
+                    // Add the station to the map as a marker
+                    mMap.addMarker(new MarkerOptions().position(stationLocation).title(stationName).snippet(slot));
+                } catch (NumberFormatException e) {
+                    // Handle the case where the location data cannot be parsed into a double
+                    Log.e("Location Parsing", "Error parsing location data", e);
+                }
+            } else {
+                // Handle the case where the location data is not in the expected format
+                Log.e("Location Parsing", "Unexpected location data format");
+            }
         }
         mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
             @Override
