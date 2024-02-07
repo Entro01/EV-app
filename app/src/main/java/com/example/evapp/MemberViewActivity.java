@@ -53,6 +53,14 @@ public class MemberViewActivity extends AppCompatActivity implements OnMapReadyC
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
         }
 
+        Button bookingsButton = findViewById(R.id.bookings_button);
+        bookingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MemberViewActivity.this, ShowBookingsActivity.class);
+                startActivity(intent);
+            }
+        });
         addStationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,25 +89,36 @@ public class MemberViewActivity extends AppCompatActivity implements OnMapReadyC
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        // Get the shared preferences for storing station data
         SharedPreferences sharedPreferences = getSharedPreferences("STATIONS", MODE_PRIVATE);
         Map<String, ?> allEntries = sharedPreferences.getAll();
+
+        // Iterate over all entries in the shared preferences
         for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
             String stationName = entry.getKey();
             String[] stationData = ((String) entry.getValue()).split(",");
-            String location = stationData[0];
-            String slot = stationData[1];
+            String location = stationData[0] + "," + stationData[1];
+            String slot = stationData[2];
 
-            // Convert the location to a LatLng object
-            // This assumes that the location is stored as a comma-separated pair of latitude and longitude
+            // Parse the location string into latitude and longitude
             String[] locationCoordinates = location.split(",");
-            if (locationCoordinates.length == 2) {
+            if (locationCoordinates.length ==  2) {
                 try {
                     double latitude = Double.parseDouble(locationCoordinates[0]);
                     double longitude = Double.parseDouble(locationCoordinates[1]);
                     LatLng stationLocation = new LatLng(latitude, longitude);
 
-                    // Add the station to the map as a marker
-                    mMap.addMarker(new MarkerOptions().position(stationLocation).title(stationName).snippet(slot));
+                    // Create a marker for the station at the given location
+                    MarkerOptions markerOptions = new MarkerOptions()
+                            .position(stationLocation)
+                            .title(stationName)
+                            .snippet(slot);
+                    mMap.addMarker(markerOptions);
+                    // Move the camera to the newly added station
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(stationLocation,  15f));
+                    // Optional: Log the marker creation for debugging purposes
+                    Log.d("MarkerCreation", "Marker added for station: " + stationName);
+
                 } catch (NumberFormatException e) {
                     // Handle the case where the location data cannot be parsed into a double
                     Log.e("Location Parsing", "Error parsing location data", e);

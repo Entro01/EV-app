@@ -70,19 +70,20 @@ public class UserViewActivity extends AppCompatActivity implements OnMapReadyCal
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Load the station data from shared preferences
+        // Get the shared preferences for storing station data
         SharedPreferences sharedPreferences = getSharedPreferences("STATIONS", MODE_PRIVATE);
         Map<String, ?> allEntries = sharedPreferences.getAll();
+
+        // Iterate over all entries in the shared preferences
         for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
             String stationName = entry.getKey();
             String[] stationData = ((String) entry.getValue()).split(",");
-            String location = stationData[0];
-            String slot = stationData[1];
+            String location = stationData[0] + "," + stationData[1]; // Combine the first two elements
+            String slot = stationData[2]; // The third element is the slot
 
-            // Convert the location to a LatLng object
-            // This assumes that the location is stored as a comma-separated pair of latitude and longitude
+            // Parse the location string into latitude and longitude
             String[] locationCoordinates = location.split(",");
-            if (locationCoordinates.length == 2) {
+            if (locationCoordinates.length ==   2) {
                 try {
                     double latitude = Double.parseDouble(locationCoordinates[0]);
                     double longitude = Double.parseDouble(locationCoordinates[1]);
@@ -98,7 +99,6 @@ public class UserViewActivity extends AppCompatActivity implements OnMapReadyCal
                 // Handle the case where the location data is not in the expected format
                 Log.e("Location Parsing", "Unexpected location data format");
             }
-
         }
         // Set an info window adapter to handle clicks on the markers
         mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
@@ -121,17 +121,19 @@ public class UserViewActivity extends AppCompatActivity implements OnMapReadyCal
                 titleTextView.setText(marker.getTitle());
                 snippetTextView.setText(marker.getSnippet());
 
-                // Set an onClickListener on the info window
-                view.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // Start BookingActivity
-                        Intent intent = new Intent(UserViewActivity.this, BookingActivity.class);
-                        startActivity(intent);
-                    }
-                });
-
+                // Return the view to the framework
                 return view;
+            }
+        });
+
+        // Set the listener for marker info window clicks
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                // Launch the BookingActivity with the station name
+                Intent bookingIntent = new Intent(UserViewActivity.this, BookingActivity.class);
+                bookingIntent.putExtra("station_name", marker.getTitle());
+                startActivity(bookingIntent);
             }
         });
 
@@ -157,6 +159,8 @@ public class UserViewActivity extends AppCompatActivity implements OnMapReadyCal
 
                 return false;
             }
+
+
 
             @Override
             public boolean onQueryTextChange(String newText) {

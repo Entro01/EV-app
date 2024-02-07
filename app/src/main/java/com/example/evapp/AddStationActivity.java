@@ -8,9 +8,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.os.Bundle;
-
-
-import android.os.Bundle;
+import android.location.Geocoder;
+import android.location.Address;
+import android.util.Log;
+import java.io.IOException;
+import java.util.List;
+import android.widget.Toast;
 
 public class AddStationActivity extends AppCompatActivity {
     private EditText stationNameEditText;
@@ -36,12 +39,36 @@ public class AddStationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String stationName = stationNameEditText.getText().toString();
-                String location = locationEditText.getText().toString();
+                String locationDescription = locationEditText.getText().toString();
                 String slot = slotSpinner.getSelectedItem().toString();
 
-                // Save the station data
+                // Use Geocoder to get the coordinates from the location description
+                Geocoder geocoder = new Geocoder(AddStationActivity.this);
+                List<Address> addresses;
+                try {
+                    addresses = geocoder.getFromLocationName(locationDescription,  1);
+                    if (!addresses.isEmpty()) {
+                        Address address = addresses.get(0);
+                        double latitude = address.getLatitude();
+                        double longitude = address.getLongitude();
+                        // Save the station data with the obtained coordinates
+                        saveStationData(stationName, latitude, longitude, slot);
+                    } else {
+                        // Handle the case where no address was found
+                        Toast.makeText(AddStationActivity.this, "Location not found", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (IOException e) {
+                    // Handle the case where geocoding failed
+                    Log.e("Geocoding Error", "Unable to get coordinates", e);
+                }
+            }
+
+            private void saveStationData(String stationName, double latitude, double longitude, String slot) {
+                // Save the station data with the coordinates
                 SharedPreferences sharedPreferences = getSharedPreferences("STATIONS", MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
+                // Format the location as "latitude,longitude"
+                String location = latitude + "," + longitude;
                 editor.putString(stationName, location + "," + slot);
                 editor.apply();
 
@@ -49,5 +76,6 @@ public class AddStationActivity extends AppCompatActivity {
                 finish();
             }
         });
+
     }
 }
