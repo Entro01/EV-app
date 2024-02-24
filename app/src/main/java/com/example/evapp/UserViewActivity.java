@@ -10,6 +10,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import android.view.View;
+import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.content.Intent;
@@ -31,6 +32,8 @@ public class UserViewActivity extends AppCompatActivity implements OnMapReadyCal
     private GoogleMap mMap;
     private SearchView searchView;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
+    private Button bookingsButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +41,14 @@ public class UserViewActivity extends AppCompatActivity implements OnMapReadyCal
         searchView = findViewById(R.id.search_view);
         searchView.setIconifiedByDefault(false);
 
+        Button bookingsButton = findViewById(R.id.bookings_button);
+        bookingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(UserViewActivity.this, ShowBookingsActivity.class);
+                startActivity(intent);
+            }
+        });
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);

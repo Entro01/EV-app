@@ -22,6 +22,12 @@
             android:hint="Car Model" />
 
         <EditText
+            android:id="@+id/vehicle_number_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Vehicle Number" />
+
+        <EditText
             android:id="@+id/phone_number_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

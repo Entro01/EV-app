@@ -3,15 +3,16 @@ package com.example.evapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import androidx.appcompat.app.AppCompatActivity;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import java.util.ArrayList;
 import java.util.Map;
-import android.widget.ListView;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 
 

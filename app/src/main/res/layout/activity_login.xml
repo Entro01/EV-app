@@ -52,5 +52,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/signup_button" />
 
+    <Button
+        android:id="@+id/admin_login_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Admin Log In"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/member_login_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

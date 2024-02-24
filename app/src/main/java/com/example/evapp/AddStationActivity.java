@@ -18,6 +18,7 @@ import android.widget.Toast;
 public class AddStationActivity extends AppCompatActivity {
     private EditText stationNameEditText;
     private EditText locationEditText;
+    private EditText priceEditText;
     private Spinner slotSpinner;
     private Button addButton;
 
@@ -28,6 +29,7 @@ public class AddStationActivity extends AppCompatActivity {
 
         stationNameEditText = findViewById(R.id.station_name_edit_text);
         locationEditText = findViewById(R.id.location_edit_text);
+        priceEditText = findViewById(R.id.price_edit_text);
         slotSpinner = findViewById(R.id.slot_spinner);
         addButton = findViewById(R.id.add_button);
 
@@ -39,6 +41,7 @@ public class AddStationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String stationName = stationNameEditText.getText().toString();
+                String price = priceEditText.getText().toString();
                 String locationDescription = locationEditText.getText().toString();
                 String slot = slotSpinner.getSelectedItem().toString();
 
@@ -52,7 +55,7 @@ public class AddStationActivity extends AppCompatActivity {
                         double latitude = address.getLatitude();
                         double longitude = address.getLongitude();
                         // Save the station data with the obtained coordinates
-                        saveStationData(stationName, latitude, longitude, slot);
+                        saveStationData(stationName, price, latitude, longitude, slot);
                     } else {
                         // Handle the case where no address was found
                         Toast.makeText(AddStationActivity.this, "Location not found", Toast.LENGTH_SHORT).show();
@@ -63,13 +66,13 @@ public class AddStationActivity extends AppCompatActivity {
                 }
             }
 
-            private void saveStationData(String stationName, double latitude, double longitude, String slot) {
+            private void saveStationData(String stationName, String price, double latitude, double longitude, String slot) {
                 // Save the station data with the coordinates
                 SharedPreferences sharedPreferences = getSharedPreferences("STATIONS", MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 // Format the location as "latitude,longitude"
                 String location = latitude + "," + longitude;
-                editor.putString(stationName, location + "," + slot);
+                editor.putString(stationName, location + "," + slot + ","  + price);
                 editor.apply();
 
                 // Go back to the MemberViewActivity

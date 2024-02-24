@@ -20,6 +20,12 @@
         android:theme="@style/Theme.EVApp"
         tools:targetApi="31">
         <activity
+            android:name=".ConfirmationsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminViewActivity"
+            android:exported="false" />
+        <activity
             android:name=".ShowBookingsActivity"
             android:exported="false" />
         <activity
@@ -75,7 +81,7 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDLYFnUFaPoWgJ_13lYEf4oaslUabPTpCk" />
+            android:value="AIzaSyABI9KIW7cL3KN7jssdoovyBF3cc9PqwtY" />
     </application>
 
 </manifest>
