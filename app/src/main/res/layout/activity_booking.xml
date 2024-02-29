@@ -34,6 +34,13 @@
             android:inputType="phone"
             android:hint="Phone Number" />
 
+        <EditText
+            android:id="@+id/time_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="phone"
+            android:hint="Time (in Hrs)" />
+
         <Button
             android:id="@+id/book_button"
             android:layout_width="match_parent"

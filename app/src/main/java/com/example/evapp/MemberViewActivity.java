@@ -97,38 +97,39 @@ public class MemberViewActivity extends AppCompatActivity implements OnMapReadyC
         for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
             String stationName = entry.getKey();
             String[] stationData = ((String) entry.getValue()).split(",");
-            String location = stationData[0] + "," + stationData[1];
-            String slot = stationData[2];
+// Check if stationData has at least three elements
+            if (stationData.length >= 3) {
+                String location = stationData[0] + "," + stationData[1];
+                String slot = stationData[2];
 
-            // Parse the location string into latitude and longitude
-            String[] locationCoordinates = location.split(",");
-            if (locationCoordinates.length ==  2) {
-                try {
-                    double latitude = Double.parseDouble(locationCoordinates[0]);
-                    double longitude = Double.parseDouble(locationCoordinates[1]);
-                    LatLng stationLocation = new LatLng(latitude, longitude);
+                // Proceed with your existing logic for adding markers
+                String[] locationCoordinates = location.split(",");
+                if (locationCoordinates.length == 2) {
+                    try {
+                        double latitude = Double.parseDouble(locationCoordinates[0]);
+                        double longitude = Double.parseDouble(locationCoordinates[1]);
+                        LatLng stationLocation = new LatLng(latitude, longitude);
 
-                    // Create a marker for the station at the given location
-                    MarkerOptions markerOptions = new MarkerOptions()
-                            .position(stationLocation)
-                            .title(stationName)
-                            .snippet(slot);
-                    mMap.addMarker(markerOptions);
-                    // Move the camera to the newly added station
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(stationLocation,  15f));
-                    // Optional: Log the marker creation for debugging purposes
-                    Log.d("MarkerCreation", "Marker added for station: " + stationName);
-
-                } catch (NumberFormatException e) {
-                    // Handle the case where the location data cannot be parsed into a double
-                    Log.e("Location Parsing", "Error parsing location data", e);
+                        MarkerOptions markerOptions = new MarkerOptions()
+                                .position(stationLocation)
+                                .title(stationName)
+                                .snippet(slot);
+                        mMap.addMarker(markerOptions);
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(stationLocation, 15f));
+                        Log.d("MarkerCreation", "Marker added for station: " + stationName);
+                    } catch (NumberFormatException e) {
+                        Log.e("Location Parsing", "Error parsing location data", e);
+                    }
+                } else {
+                    Log.e("Location Parsing", "Unexpected location data format");
                 }
             } else {
-                // Handle the case where the location data is not in the expected format
-                Log.e("Location Parsing", "Unexpected location data format");
+                Log.e("Station Data", "Insufficient data for station: " + stationName);
             }
         }
-        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+
+            mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
             @Override
             public View getInfoWindow(Marker marker) {
                 return null;

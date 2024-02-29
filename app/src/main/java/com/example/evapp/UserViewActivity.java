@@ -89,29 +89,34 @@ public class UserViewActivity extends AppCompatActivity implements OnMapReadyCal
         for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
             String stationName = entry.getKey();
             String[] stationData = ((String) entry.getValue()).split(",");
-            String location = stationData[0] + "," + stationData[1]; // Combine the first two elements
-            String slot = stationData[2]; // The third element is the slot
+            if (stationData.length >= 3) { // Ensure there are at least 3 elements in the array
+                String location = stationData[0] + "," + stationData[1]; // Combine the first two elements
+                String slot = stationData[2]; // The third element is the slot
 
-            // Parse the location string into latitude and longitude
-            String[] locationCoordinates = location.split(",");
-            if (locationCoordinates.length ==   2) {
-                try {
-                    double latitude = Double.parseDouble(locationCoordinates[0]);
-                    double longitude = Double.parseDouble(locationCoordinates[1]);
-                    LatLng stationLocation = new LatLng(latitude, longitude);
+                // Parse the location string into latitude and longitude
+                String[] locationCoordinates = location.split(",");
+                if (locationCoordinates.length == 2) {
+                    try {
+                        double latitude = Double.parseDouble(locationCoordinates[0]);
+                        double longitude = Double.parseDouble(locationCoordinates[1]);
+                        LatLng stationLocation = new LatLng(latitude, longitude);
 
-                    // Add the station to the map as a marker
-                    mMap.addMarker(new MarkerOptions().position(stationLocation).title(stationName).snippet(slot));
-                } catch (NumberFormatException e) {
-                    // Handle the case where the location data cannot be parsed into a double
-                    Log.e("Location Parsing", "Error parsing location data", e);
+                        // Add the station to the map as a marker
+                        mMap.addMarker(new MarkerOptions().position(stationLocation).title(stationName).snippet(slot));
+                    } catch (NumberFormatException e) {
+                        // Handle the case where the location data cannot be parsed into a double
+                        Log.e("Location Parsing", "Error parsing location data", e);
+                    }
+                } else {
+                    // Handle the case where the location data is not in the expected format
+                    Log.e("Location Parsing", "Unexpected location data format");
                 }
             } else {
-                // Handle the case where the location data is not in the expected format
-                Log.e("Location Parsing", "Unexpected location data format");
+                // Handle the case where stationData does not have the expected number of elements
+                Log.e("Station Data Parsing", "Insufficient data for station: " + stationName);
             }
         }
-        // Set an info window adapter to handle clicks on the markers
+            // Set an info window adapter to handle clicks on the markers
         mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
             @Override
             public View getInfoWindow(Marker marker) {

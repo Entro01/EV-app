@@ -1,6 +1,7 @@
 package com.example.evapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import android.util.Log;
 
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
@@ -51,15 +52,27 @@ public class ShowBookingsActivity extends AppCompatActivity {
 
                 String bookingDetail = getItem(position);
                 String[] bookingInfo = bookingDetail.split(": ");
-                String stationName = bookingInfo[0];
-                String[] stationInfo = bookingInfo[1].split(",");
-
-                stationNameTextView.setText(stationName);
-                locationTextView.setText(stationInfo[0]);
-                timeSlotTextView.setText(stationInfo[1]);
+                // Check if bookingInfo has at least two elements
+                if (bookingInfo.length >= 2) {
+                    String stationName = bookingInfo[0];
+                    String[] stationInfo = bookingInfo[1].split(",");
+                    // Check if stationInfo has at least two elements
+                    if (stationInfo.length >= 2) {
+                        stationNameTextView.setText(stationName);
+                        locationTextView.setText(stationInfo[0]);
+                        timeSlotTextView.setText(stationInfo[1]);
+                    } else {
+                        // Handle the case where stationInfo does not have the expected number of elements
+                        Log.e("ShowBookingsActivity", "Unexpected station info format for booking detail: " + bookingDetail);
+                    }
+                } else {
+                    // Handle the case where bookingInfo does not have the expected number of elements
+                    Log.e("ShowBookingsActivity", "Unexpected booking detail format: " + bookingDetail);
+                }
 
                 return convertView;
             }
+
         };
         listView.setAdapter(bookingsAdapter);
     }

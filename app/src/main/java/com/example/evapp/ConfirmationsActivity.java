@@ -23,6 +23,9 @@ public class ConfirmationsActivity extends AppCompatActivity {
         // Assuming the station name is passed as an extra from the previous activity
         String stationName = getIntent().getStringExtra("station_name");
 
+        // Retrieve the number of hours from the intent
+        int hours = getIntent().getIntExtra("hours", 0); // Default to 0 if not provided
+
         // Fetch the station details from Shared Preferences
         SharedPreferences sharedPreferences = getSharedPreferences("STATIONS", MODE_PRIVATE);
         String stationDetails = sharedPreferences.getString(stationName, "");
@@ -33,7 +36,7 @@ public class ConfirmationsActivity extends AppCompatActivity {
         double price = Double.parseDouble(priceString);
 
         // Calculate the final price with a  15% tax
-        double finalPrice = price + (price *  0.15);
+        double finalPrice = (price + (price *  0.15)) * hours;
 
         // Display the final price
         priceTextView.setText("Final Price: $" + String.format("%.2f", finalPrice));

@@ -14,6 +14,7 @@ public class BookingActivity extends AppCompatActivity {
     private EditText carModelEditText;
     private EditText vehicleNumberEditText;
     private EditText phoneNumberEditText;
+    private EditText timeEditText;
     private Button bookButton;
     private String stationName; // Assume this is passed from the previous activity
 
@@ -26,6 +27,7 @@ public class BookingActivity extends AppCompatActivity {
         carModelEditText = findViewById(R.id.car_model_edit_text);
         vehicleNumberEditText = findViewById(R.id.vehicle_number_edit_text);
         phoneNumberEditText = findViewById(R.id.phone_number_edit_text);
+        timeEditText = findViewById(R.id.time_edit_text);
         bookButton = findViewById(R.id.book_button);
 
         // Get the station name from the intent if passed
@@ -41,25 +43,36 @@ public class BookingActivity extends AppCompatActivity {
                 String carModel = carModelEditText.getText().toString();
                 String vehicleNumber = vehicleNumberEditText.getText().toString();
                 String phoneNumber = phoneNumberEditText.getText().toString();
+                String time = timeEditText.getText().toString();
 
                 // Save the booking information to SharedPreferences
-                saveBookingData(userName, carModel, vehicleNumber, phoneNumber);
+                saveBookingData(userName, carModel, vehicleNumber, phoneNumber, time);
 
                 // Redirect to ConfirmationsActivity
                 Intent confirmationsIntent = new Intent(BookingActivity.this, ConfirmationsActivity.class);
                 confirmationsIntent.putExtra("station_name", stationName); // Pass the station name
+
+                // Assuming time is entered in hours, parse it to an integer and add it as an extra
+                try {
+                    int hours = Integer.parseInt(time);
+                    confirmationsIntent.putExtra("hours", hours); // Pass the number of hours
+                } catch (NumberFormatException e) {
+                    Toast.makeText(BookingActivity.this, "Please enter a valid number of hours", Toast.LENGTH_SHORT).show();
+                    return; // Don't proceed if time is not a valid number
+                }
+
                 startActivity(confirmationsIntent);
                 finish(); // Close BookingActivity
             }
         });
     }
 
-    private void saveBookingData(String userName, String carModel, String vehicleNumber, String phoneNumber) {
+    private void saveBookingData(String userName, String carModel, String vehicleNumber, String phoneNumber, String time) {
         SharedPreferences sharedPreferences = getSharedPreferences("BOOKINGS", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         // Save the booking data with the station name as the key
-        editor.putString(stationName, userName + "," + carModel + "," + vehicleNumber + "," + phoneNumber);
+        editor.putString(stationName, userName + "," + carModel + "," + vehicleNumber + "," + phoneNumber + "," + time);
         editor.apply();
     }
 }
