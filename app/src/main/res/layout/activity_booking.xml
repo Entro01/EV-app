@@ -41,6 +41,24 @@
             android:inputType="phone"
             android:hint="Time (in Hrs)" />
 
+        <EditText
+            android:id="@+id/date_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="date"
+            android:hint="Date" />
+
+        <Spinner
+            android:id="@+id/slot_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/slots_array" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="The cost of all connectors is on per hour basis."/>
+
         <Button
             android:id="@+id/book_button"
             android:layout_width="match_parent"

@@ -9,6 +9,7 @@ import android.content.Intent;
 
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 
 import android.os.Bundle;
 
@@ -19,12 +20,17 @@ public class LoginActivity extends AppCompatActivity {
     private Button signUpButton;
     private Button memberLoginButton;
     private Button adminLoginButton;
+    private AppDatabase db;
+    private UserDao dao;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "UserDatabase").allowMainThreadQueries().build();
+        dao = db.userDao();
 
         usernameInput = findViewById(R.id.username_input);
         passwordInput = findViewById(R.id.password_input);
@@ -45,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
+                intent.putExtra("type", 0); // Pass the login type
                 startActivity(intent);
             }
         });
@@ -86,13 +93,17 @@ public class LoginActivity extends AppCompatActivity {
         String username = usernameInput.getText().toString();
         String password = passwordInput.getText().toString();
 
-        // Simulate successful login
-        Toast.makeText(this, "Logged in as " + username, Toast.LENGTH_SHORT).show();
+        if (dao.userExists(username, password)) {
+            // Simulate successful login
+            Toast.makeText(this, "Login successful " + username, Toast.LENGTH_SHORT).show();
 
-        // Start MapsActivity
-        Intent intent = new Intent(LoginActivity.this, UserViewActivity.class);
-        startActivity(intent);
-        finish();
+            // Start MapsActivity
+            Intent intent = new Intent(LoginActivity.this, UserViewActivity.class);
+            startActivity(intent);
+            finish();
+
+        } else Toast.makeText(this, "User does not exist", Toast.LENGTH_SHORT).show();
+
     }
 
 }

@@ -5,11 +5,76 @@
     android:padding="16dp">
 
     <TextView
+        android:id="@+id/tick_symbol"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="\u2713"
+        android:textSize="60sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/user_name_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tick_symbol"
+        android:text="User Name:"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/car_model_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/user_name_text_view"
+        android:text="Car Model:"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/hours_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/car_model_text_view"
+        android:text="Hours:"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/date_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/hours_text_view"
+        android:text="Date:"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/rate_per_hour_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/date_text_view"
+        android:text="Rate per Hour:"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tax_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rate_per_hour_text_view"
+        android:text="Tax:"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <TextView
         android:id="@+id/price_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:textSize="24sp"
+        android:layout_below="@id/tax_text_view"
+        android:text="Final Price:"
+        android:textSize="30sp"
         android:textStyle="bold" />
 
     <Button
@@ -19,6 +84,8 @@
         android:layout_below="@id/price_text_view"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        android:text="Confirm" />
+        android:text="Confirm"
+        android:textSize="30sp"
+        android:textStyle="bold" />
 
 </RelativeLayout>

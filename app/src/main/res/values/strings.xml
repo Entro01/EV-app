@@ -7,4 +7,10 @@
         <item>Evening</item>
         <item>Night</item>
     </string-array>
+    <string-array name="chargers_array">
+        <item>Type 1 JMT2</item>
+        <item>Type 2 MENNES</item>
+        <item>CHAdeMO</item>
+        <item>Supercharger</item>
+    </string-array>
 </resources>
