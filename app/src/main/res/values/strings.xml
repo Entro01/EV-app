@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">EV app</string>
+    <string name="app_name">Charge-UP</string>
     <string name="title_activity_maps">MapsActivity</string>
     <string-array name="slots_array">
         <item>Morning</item>

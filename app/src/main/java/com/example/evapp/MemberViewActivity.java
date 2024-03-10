@@ -34,6 +34,7 @@ public class MemberViewActivity extends AppCompatActivity implements OnMapReadyC
     private SearchView searchView;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
     private Button addStationButton;
+    private Button viewStationsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +43,7 @@ public class MemberViewActivity extends AppCompatActivity implements OnMapReadyC
         searchView = findViewById(R.id.search_view);
         searchView.setIconifiedByDefault(false);
         addStationButton = findViewById(R.id.add_station_button);
-
+        viewStationsButton = findViewById(R.id.view_stations_button);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -58,6 +59,13 @@ public class MemberViewActivity extends AppCompatActivity implements OnMapReadyC
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MemberViewActivity.this, ShowBookingsActivity.class);
+                startActivity(intent);
+            }
+        });
+        viewStationsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MemberViewActivity.this, RemoveStations.class);
                 startActivity(intent);
             }
         });

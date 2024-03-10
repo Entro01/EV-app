@@ -30,6 +30,14 @@ public class ShowBookingsActivity extends AppCompatActivity {
         listView = findViewById(R.id.list_view);
         bookingsList = new ArrayList<>();
 
+        // Inflate the header layout
+        View header = getLayoutInflater().inflate(R.layout.header, null);
+        // Add the header to the ListView
+        listView.addHeaderView(header);
+
+        listView = findViewById(R.id.list_view);
+        bookingsList = new ArrayList<>();
+
         SharedPreferences sharedPreferences = getSharedPreferences("BOOKINGS", MODE_PRIVATE);
         Map<String, ?> allEntries = sharedPreferences.getAll();
         for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
@@ -49,6 +57,8 @@ public class ShowBookingsActivity extends AppCompatActivity {
                 TextView stationNameTextView = convertView.findViewById(R.id.station_name_text_view);
                 TextView locationTextView = convertView.findViewById(R.id.location_text_view);
                 TextView timeSlotTextView = convertView.findViewById(R.id.time_slot_text_view);
+                TextView mobileNumberTextView = convertView.findViewById(R.id.mobile_number_text_view); // Assuming you have this TextView in your list_item_booking layout
+                TextView dateTextView = convertView.findViewById(R.id.date_text_view); // Assuming you have this TextView in your list_item_booking layout
 
                 String bookingDetail = getItem(position);
                 String[] bookingInfo = bookingDetail.split(": ");
@@ -61,6 +71,8 @@ public class ShowBookingsActivity extends AppCompatActivity {
                         stationNameTextView.setText(stationName);
                         locationTextView.setText(stationInfo[0]);
                         timeSlotTextView.setText(stationInfo[1]);
+                        mobileNumberTextView.setText(stationInfo[3]); // Set mobile number
+                        dateTextView.setText(stationInfo[5]); // Set date
                     } else {
                         // Handle the case where stationInfo does not have the expected number of elements
                         Log.e("ShowBookingsActivity", "Unexpected station info format for booking detail: " + bookingDetail);
