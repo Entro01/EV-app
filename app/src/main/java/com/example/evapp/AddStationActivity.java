@@ -1,6 +1,8 @@
 package com.example.evapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
+
 import android.content.SharedPreferences;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -22,10 +24,16 @@ public class AddStationActivity extends AppCompatActivity {
     private Spinner slotSpinner;
     private Button addButton;
 
+    private AppDatabase db;
+    private UserDao dao;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_station);
+
+        db = Room.databaseBuilder(this, AppDatabase.class, "UserDatabase").allowMainThreadQueries().build();
+        dao = db.userDao();
 
         stationNameEditText = findViewById(R.id.station_name_edit_text);
         locationEditText = findViewById(R.id.location_edit_text);
@@ -50,6 +58,7 @@ public class AddStationActivity extends AppCompatActivity {
                 List<Address> addresses;
                 try {
                     addresses = geocoder.getFromLocationName(locationDescription,  1);
+                    assert addresses != null;
                     if (!addresses.isEmpty()) {
                         Address address = addresses.get(0);
                         double latitude = address.getLatitude();
@@ -68,12 +77,7 @@ public class AddStationActivity extends AppCompatActivity {
 
             private void saveStationData(String stationName, String price, double latitude, double longitude, String slot) {
                 // Save the station data with the coordinates
-                SharedPreferences sharedPreferences = getSharedPreferences("STATIONS", MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                // Format the location as "latitude,longitude"
-                String location = latitude + "," + longitude;
-                editor.putString(stationName, location + "," + slot + ","  + price);
-                editor.apply();
+                dao.insertStation(stationName, price, String.valueOf(latitude), String.valueOf(longitude), slot);
 
                 // Go back to the MemberViewActivity
                 finish();

@@ -1,6 +1,8 @@
 package com.example.evapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
+
 import android.os.Bundle;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,10 +25,19 @@ public class BookingActivity extends AppCompatActivity {
     private Button bookButton;
     private String stationName; // Assume this is passed from the previous activity
 
+    private AppDatabase db;
+    private UserDao dao;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking);
+
+
+        db = Room.databaseBuilder(this, AppDatabase.class, "UserDatabase").allowMainThreadQueries().build();
+        dao = db.userDao();
+
 
         userNameEditText = findViewById(R.id.user_name_edit_text);
         carModelEditText = findViewById(R.id.car_model_edit_text);
@@ -86,11 +97,6 @@ public class BookingActivity extends AppCompatActivity {
     }
 
     private void saveBookingData(String userName, String carModel, String vehicleNumber, String phoneNumber, String time, String date, String slot) {
-        SharedPreferences sharedPreferences = getSharedPreferences("BOOKINGS", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        // Save the booking data with the station name as the key
-        editor.putString(stationName, userName + "," + carModel + "," + vehicleNumber + "," + phoneNumber + "," + time + "," + date + "," + slot);
-        editor.apply();
+        dao.insertBooking(userName, carModel, vehicleNumber, phoneNumber, time, date, slot);
     }
 }

@@ -3,6 +3,8 @@ package com.example.evapp;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
+
 import android.content.SharedPreferences;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,11 +18,16 @@ public class RemoveStations extends AppCompatActivity {
     private ListView listViewStations;
     private ArrayList<String> stationsList;
     private ArrayAdapter<String> stationsAdapter;
+    private AppDatabase db;
+    private UserDao dao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_remove_stations);
+
+        db = Room.databaseBuilder(this, AppDatabase.class, "UserDatabase").allowMainThreadQueries().build();
+        dao = db.userDao();
 
         listViewStations = findViewById(R.id.list_view_stations);
         stationsList = new ArrayList<>();
@@ -37,19 +44,9 @@ public class RemoveStations extends AppCompatActivity {
         listViewStations.setAdapter(stationsAdapter);
 
         // Set up the click listener for the ListView items
-        listViewStations.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String selectedStation = stationsList.get(position);
-                // Remove the station from shared preferences
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.remove(selectedStation);
-                editor.apply();
-
-                // Update the list view
-                stationsList.remove(position);
-                stationsAdapter.notifyDataSetChanged();
-            }
+        listViewStations.setOnItemClickListener((parent, view, position, id) -> {
+            String selectedStation = stationsList.get(position);
+            dao.deleteStation(selectedStation);
         });
     }
 }
