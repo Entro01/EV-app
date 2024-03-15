@@ -34,4 +34,7 @@ interface UserDao {
 
     @Insert(Booking::class)
     fun insertBooking(booking: Booking)
+
+    @Query("SELECT * FROM bookings")
+    fun getBookings(): List<Booking>
 }

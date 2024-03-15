@@ -40,7 +40,7 @@ import android.location.Location;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
+import androidx.room.Room;
 
 public class UserViewActivity extends AppCompatActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
@@ -48,6 +48,7 @@ public class UserViewActivity extends AppCompatActivity implements OnMapReadyCal
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
     private Button bookingsButton;
     private FusedLocationProviderClient fusedLocationClient;
+    private AppDatabase db;
 
 
     @Override
@@ -105,12 +106,13 @@ public class UserViewActivity extends AppCompatActivity implements OnMapReadyCal
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        // Check if the app already has location permissions
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
                 ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // If not, request location permissions
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
         }
+
+        // Initialize the Room database
+        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "UserDatabase").build();
     }
 
     @Override
@@ -132,19 +134,15 @@ public class UserViewActivity extends AppCompatActivity implements OnMapReadyCal
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Get the shared preferences for storing station data
-        SharedPreferences sharedPreferences = getSharedPreferences("STATIONS", MODE_PRIVATE);
-        Map<String, ?> allEntries = sharedPreferences.getAll();
+        // Load stations from the database
+        new Thread(() -> {
+            List<Station> stations = db.userDao().getStations();
+            for (Station station : stations) {
+                String stationName = station.getStationName();
+                String location = station.getLatitude() + "," + station.getLongitude();
+                String slot = station.getSlot();
 
-        // Iterate over all entries in the shared preferences
-        for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
-            String stationName = entry.getKey();
-            String[] stationData = ((String) entry.getValue()).split(",");
-            if (stationData.length >= 3) { // Ensure there are at least 3 elements in the array
-                String location = stationData[0] + "," + stationData[1]; // Combine the first two elements
-                String slot = stationData[2]; // The third element is the slot
-
-                // Parse the location string into latitude and longitude
+                // Proceed with your existing logic for adding markers
                 String[] locationCoordinates = location.split(",");
                 if (locationCoordinates.length == 2) {
                     try {
@@ -152,21 +150,24 @@ public class UserViewActivity extends AppCompatActivity implements OnMapReadyCal
                         double longitude = Double.parseDouble(locationCoordinates[1]);
                         LatLng stationLocation = new LatLng(latitude, longitude);
 
-                        // Add the station to the map as a marker
-                        mMap.addMarker(new MarkerOptions().position(stationLocation).title(stationName).snippet(slot));
+                        // Use runOnUiThread to ensure this runs on the main thread
+                        runOnUiThread(() -> {
+                            MarkerOptions markerOptions = new MarkerOptions()
+                                    .position(stationLocation)
+                                    .title(stationName)
+                                    .snippet(slot);
+                            mMap.addMarker(markerOptions);
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(stationLocation, 15f));
+                            Log.d("MarkerCreation", "Marker added for station: " + stationName);
+                        });
                     } catch (NumberFormatException e) {
-                        // Handle the case where the location data cannot be parsed into a double
                         Log.e("Location Parsing", "Error parsing location data", e);
                     }
                 } else {
-                    // Handle the case where the location data is not in the expected format
                     Log.e("Location Parsing", "Unexpected location data format");
                 }
-            } else {
-                // Handle the case where stationData does not have the expected number of elements
-                Log.e("Station Data Parsing", "Insufficient data for station: " + stationName);
             }
-        }
+        }).start();
             // Set an info window adapter to handle clicks on the markers
         mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
             @Override

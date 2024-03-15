@@ -28,15 +28,6 @@
         android:layout_below="@id/add_station_button"
         android:layout_centerHorizontal="true"/>
 
-    <Button
-        android:id="@+id/view_stations_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="View Stations"
-        android:layout_below="@id/bookings_button"
-        android:layout_centerHorizontal="true"/>
-
-
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:map="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"

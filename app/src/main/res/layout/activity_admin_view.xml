@@ -32,4 +32,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+
+    <!-- Added Button here -->
+    <Button
+        android:id="@+id/remove_stations_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Remove Stations"
+        android:layout_below="@id/bookings_title"
+        android:layout_centerHorizontal="true"/>
+
 </LinearLayout>
