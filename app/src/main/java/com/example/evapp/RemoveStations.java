@@ -11,13 +11,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 
 public class RemoveStations extends AppCompatActivity {
     private ListView listViewStations;
-    private ArrayList<String> stationsList;
-    private ArrayAdapter<String> stationsAdapter;
+    private ArrayAdapter<Station> stationsAdapter;
     private AppDatabase db;
     private UserDao dao;
 
@@ -30,22 +30,18 @@ public class RemoveStations extends AppCompatActivity {
         dao = db.userDao();
 
         listViewStations = findViewById(R.id.list_view_stations);
-        stationsList = new ArrayList<>();
 
         // Load stations from shared preferences
         SharedPreferences sharedPreferences = getSharedPreferences("STATIONS", MODE_PRIVATE);
-        Map<String, ?> allEntries = sharedPreferences.getAll();
-        for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
-            stationsList.add(entry.getKey()); // Assuming the station name is the key
-        }
+        List<Station> allEntries = dao.getStations();
 
         // Set up the adapter for the ListView
-        stationsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, stationsList);
+        stationsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, allEntries);
         listViewStations.setAdapter(stationsAdapter);
 
         // Set up the click listener for the ListView items
         listViewStations.setOnItemClickListener((parent, view, position, id) -> {
-            String selectedStation = stationsList.get(position);
+            Station selectedStation = allEntries.get(position);
             dao.deleteStation(selectedStation);
         });
     }

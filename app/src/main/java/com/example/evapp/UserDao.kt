@@ -23,12 +23,15 @@ interface UserDao {
     @Query("INSERT INTO members (username, password, name, email) VALUES (:username, :password, :name, :email)")
     fun insertMember(username: String, password: String, name: String, email: String)
 
+    @Query("SELECT * FROM stations")
+    fun getStations(): List<Station>
+
     @Insert(Station::class)
-    fun insertStation(stationName: String, price: String, latitude: String, longitude: String, slot: String);
+    fun insertStation(station: Station);
 
     @Delete(Station::class)
-    fun deleteStation(stationName: String)
+    fun deleteStation(station: Station)
 
-    @Insert(Bookings::class)
-    fun insertBooking(userName: String, carModel: String, vehicleNumber: String, phoneNumber: String, time: String, date: String, slot: String)
+    @Insert(Booking::class)
+    fun insertBooking(booking: Booking)
 }

@@ -97,6 +97,6 @@ public class BookingActivity extends AppCompatActivity {
     }
 
     private void saveBookingData(String userName, String carModel, String vehicleNumber, String phoneNumber, String time, String date, String slot) {
-        dao.insertBooking(userName, carModel, vehicleNumber, phoneNumber, time, date, slot);
+        dao.insertBooking(new Booking(userName, carModel, vehicleNumber, phoneNumber, time, date, slot));
     }
 }

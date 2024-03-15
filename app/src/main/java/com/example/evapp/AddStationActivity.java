@@ -77,7 +77,7 @@ public class AddStationActivity extends AppCompatActivity {
 
             private void saveStationData(String stationName, String price, double latitude, double longitude, String slot) {
                 // Save the station data with the coordinates
-                dao.insertStation(stationName, price, String.valueOf(latitude), String.valueOf(longitude), slot);
+                dao.insertStation(new Station(stationName, price, String.valueOf(latitude), String.valueOf(longitude), slot));
 
                 // Go back to the MemberViewActivity
                 finish();
