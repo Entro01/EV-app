@@ -41,7 +41,7 @@ public class ShowBookingsActivity extends AppCompatActivity {
         new Thread(() -> {
             List<Booking> bookings = db.userDao().getBookings(); // Assuming you have a method to get bookings
             for (Booking booking : bookings) {
-                bookingsList.add(booking.getUserName() + ", " + booking.getCarModel() + ", " + booking.getVehicleNumber() + ", " + booking.getPhoneNumber() + ", " + booking.getTime() + ", " + booking.getDate() + ", " + booking.getSlot());
+                bookingsList.add(booking.getUserName() + ", " + booking.getStationName() + ", " + booking.getCarModel() + ", " + booking.getVehicleNumber() + ", " + booking.getPhoneNumber() + ", " + booking.getTime() + ", " + booking.getDate() + ", " + booking.getSlot());
             }
             runOnUiThread(() -> {
                 bookingsAdapter = new ArrayAdapter<String>(this, R.layout.list_item_booking, R.id.station_name_text_view, bookingsList) {
@@ -61,11 +61,11 @@ public class ShowBookingsActivity extends AppCompatActivity {
                         String bookingDetail = getItem(position);
                         String[] bookingInfo = bookingDetail.split(", ");
                         if (bookingInfo.length >= 2) {
-                            stationNameTextView.setText(bookingInfo[0]);
-                            locationTextView.setText(bookingInfo[1]);
+                            stationNameTextView.setText(bookingInfo[1]);
+                            locationTextView.setText(bookingInfo[0]);
                             timeSlotTextView.setText(bookingInfo[2]);
-                            mobileNumberTextView.setText(bookingInfo[3]);
-                            dateTextView.setText(bookingInfo[4]);
+                            mobileNumberTextView.setText(bookingInfo[4]);
+                            dateTextView.setText(bookingInfo[6]);
                         }
 
                         return convertView;

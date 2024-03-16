@@ -70,7 +70,7 @@ public class BookingActivity extends AppCompatActivity {
                 String slot = slotSpinner.getSelectedItem().toString();
 
                 // Save the booking information to SharedPreferences
-                saveBookingData(userName, carModel, vehicleNumber, phoneNumber, time, date, slot);
+                saveBookingData(userName, stationName, carModel, vehicleNumber, phoneNumber, time, date, slot);
 
                 // Redirect to ConfirmationsActivity
                 Intent confirmationsIntent = new Intent(BookingActivity.this, ConfirmationsActivity.class);
@@ -96,7 +96,7 @@ public class BookingActivity extends AppCompatActivity {
         });
     }
 
-    private void saveBookingData(String userName, String carModel, String vehicleNumber, String phoneNumber, String time, String date, String slot) {
-        dao.insertBooking(new Booking(userName, carModel, vehicleNumber, phoneNumber, time, date, slot));
+    private void saveBookingData(String userName, String stationName, String carModel, String vehicleNumber, String phoneNumber, String time, String date, String slot) {
+        dao.insertBooking(new Booking(userName, stationName, carModel, vehicleNumber, phoneNumber, time, date, slot));
     }
 }

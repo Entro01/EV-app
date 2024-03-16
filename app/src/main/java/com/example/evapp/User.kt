@@ -20,5 +20,5 @@ data class Station(
 
 @Entity(tableName = "bookings")
 data class Booking(
-    @PrimaryKey val userName: String, val carModel: String, val vehicleNumber: String, val phoneNumber: String, val time: String, val date: String, val slot: String
+    @PrimaryKey val userName: String, val stationName: String, val carModel: String, val vehicleNumber: String, val phoneNumber: String, val time: String, val date: String, val slot: String
 )
